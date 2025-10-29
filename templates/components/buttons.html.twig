@@ -1,0 +1,85 @@
+{# templates/components/buttons.html.twig #}
+
+{# Bouton Primaire #}
+{% macro primary(text, type = 'button', size = 'md', disabled = false, icon = null, loading = false) %}
+    <button
+        type="{{ type }}"
+        class="btn btn-primary btn-{{ size }} {{ loading ? 'btn-loading' : '' }}"
+        {% if disabled %}disabled{% endif %}
+    >
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+        {% if loading %}
+            <span class="btn-spinner">
+                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </span>
+        {% endif %}
+    </button>
+{% endmacro %}
+
+{# Bouton Secondaire #}
+{% macro secondary(text, type = 'button', size = 'md', disabled = false, icon = null) %}
+    <button
+        type="{{ type }}"
+        class="btn btn-secondary btn-{{ size }}"
+        {% if disabled %}disabled{% endif %}
+    >
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+    </button>
+{% endmacro %}
+
+{# Bouton Ghost #}
+{% macro ghost(text, type = 'button', size = 'md', disabled = false, icon = null) %}
+    <button
+        type="{{ type }}"
+        class="btn btn-ghost btn-{{ size }}"
+        {% if disabled %}disabled{% endif %}
+    >
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+    </button>
+{% endmacro %}
+
+{# Bouton Danger #}
+{% macro danger(text, type = 'button', size = 'md', disabled = false, icon = null) %}
+    <button
+        type="{{ type }}"
+        class="btn btn-danger btn-{{ size }}"
+        {% if disabled %}disabled{% endif %}
+    >
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+    </button>
+{% endmacro %}
+
+{# Bouton Lien Primaire #}
+{% macro primary_link(text, href, size = 'md', icon = null) %}
+    <a href="{{ href }}" class="btn btn-primary btn-{{ size }}">
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+    </a>
+{% endmacro %}
+
+{# Bouton Lien Secondaire #}
+{% macro secondary_link(text, href, size = 'md', icon = null) %}
+    <a href="{{ href }}" class="btn btn-secondary btn-{{ size }}">
+        {% if icon %}
+            <span class="btn-icon-wrapper" aria-hidden="true">{{ icon }}</span>
+        {% endif %}
+        <span class="btn-text">{{ text }}</span>
+    </a>
+{% endmacro %}

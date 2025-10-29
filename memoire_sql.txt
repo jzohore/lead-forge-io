@@ -1,3 +1,4 @@
+docker-compose exec db psql -U postgres -d leadforge
 -- Liste des databases
 \l
 

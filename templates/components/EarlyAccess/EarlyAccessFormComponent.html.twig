@@ -1,0 +1,52 @@
+<div{{ attributes }}>
+    {% import 'form_macros.html.twig' as macros %}
+    {% if isSuccessful %}
+        <h1 class="text-2xl font-bold text-gray-900">
+            Merci.
+        </h1>
+
+        <p class="mt-2 text-gray-700">
+            Nous sommes ravis de vous compter parmi nos premiers utilisateurs. <br>
+            Notre équipe reviendra vers vous très bientôt pour finaliser votre accès à la bêta et recueillir vos premiers retours.
+        </p>
+
+        <div class="flex justify-end mt-6">
+            <a href="{{ path('website_homepage') }}"
+               class="btn btn-md text-white w-full bg-[#0B261C] hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-200">
+                Retour à l'accueil
+            </a>
+        </div>
+
+    {% else %}
+        <h1 class="text-2xl font-bold text-gray-900">
+            Veuillez fournir vos coordonnées.
+        </h1>
+
+        <div data-controller="form">
+            {{ form_start(form, {
+                attr: {
+                    novalidate: true,
+                    'data-action': 'live#action:prevent',
+                    'data-live-action-param': 'save',
+                }
+            }) }}
+            <p class="text-xs text-gray-500 mb-4">À moins d'une mention spécifique, tous les champs sont obligatoires.</p>
+            <div class="flex flex-col gap-3">
+                {{ macros.tailwind_form_row(form.email) }}
+                {{ macros.tailwind_form_row(form.lastName) }}
+                {{ macros.tailwind_form_row(form.userSegment) }}
+                <div class="flex justify-end">
+                    {{ form_row(form.submit, {
+                        attr: { 'class': 'btn btn-sm text-white bg-[#0B261C] hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-200' },
+                    }) }}
+                </div>
+
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    {% endif %}
+
+
+
+</div>

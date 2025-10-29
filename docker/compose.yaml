@@ -4,8 +4,8 @@ services:
       context: ..
       dockerfile: docker/frankenphp/Dockerfile
       target: frankenphp_dev
-    image: leadforge-app:dev                    # ✅ Renommé
-    container_name: leadforge_app               # ✅ Renommé
+    image: leadforge-app:dev
+    container_name: leadforge_app
     restart: unless-stopped
     environment:
       APP_ENV: ${APP_ENV:-dev}
@@ -16,14 +16,22 @@ services:
       XDG_DATA_HOME: /data
       XDG_CONFIG_HOME: /config
       SERVER_NAME: :443
+    # ⬇️ MODIFIÉ : Remplacement du "bind mount" lent par des volumes rapides
     volumes:
-      - ../:/srv/app:cached
+      # Volume synchronisé par Mutagen : ultra rapide
+      - app_sync:/srv/app
+      # Volumes dédiés pour les dépendances et le cache/logs. NON synchronisés.
+      - vendor:/srv/app/vendor
+      - var:/srv/app/var
+
+      # Ces volumes restent inchangés
       - ./frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
       - caddy_data:/data/caddy
       - caddy_config:/config/caddy
+    # ⬆️ FIN DES MODIFICATIONS
     ports:
-      - "9443:443"                              # ✅ Modifié (8443 → 9443)
-      - "9000:80"                               # ✅ Modifié (8000 → 9000)
+      - "9443:443"
+      - "9000:80"
     depends_on:
       db:
         condition: service_healthy
@@ -33,20 +41,28 @@ services:
         condition: service_healthy
     networks:
       - leadforge
+    extra_hosts:
+      - "lead-forge.local:host-gateway"
+      - "mailhog.local:host-gateway"
+      - "mercure.local:host-gateway"
+      - "redis.local:host-gateway"
+      - "rabbitmq.local:host-gateway"
     tty: true
+
+  # ... Les autres services (db, redis, rabbitmq, mercure) restent inchangés ...
 
   db:
     image: postgres:16-alpine
-    container_name: leadforge_db                # ✅ Renommé
+    container_name: leadforge_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-leadforge}    # ✅ leadForge → leadforge (minuscule)
+      POSTGRES_DB: ${POSTGRES_DB:-leadforge}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"                             # ✅ Modifié (5432 → 5433)
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
@@ -57,12 +73,12 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: leadforge_redis             # ✅ Renommé
+    container_name: leadforge_redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
     ports:
-      - "6380:6379"                             # ✅ Modifié (6379 → 6380)
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -73,7 +89,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: leadforge_rabbitmq          # ✅ Renommé
+    container_name: leadforge_rabbitmq
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -81,8 +97,8 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:
-      - "5673:5672"                             # ✅ Modifié (5672 → 5673)
-      - "15673:15672"                           # ✅ Modifié (15672 → 15673)
+      - "5673:5672"
+      - "15673:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
@@ -93,17 +109,17 @@ services:
 
   mercure:
     image: dunglas/mercure:latest
-    container_name: leadforge_mercure           # ✅ Renommé
+    container_name: leadforge_mercure
     restart: unless-stopped
     environment:
       SERVER_NAME: ':80'
       MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
       MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
       MERCURE_EXTRA_DIRECTIVES: |
-        cors_origins http://localhost:9000 https://localhost:9443    # ✅ Ports modifiés
+        cors_origins http://localhost:9000 https://localhost:9443
         anonymous
     ports:
-      - "3001:80"                               # ✅ Modifié (3000 → 3001)
+      - "3001:80"
     networks:
       - leadforge
     healthcheck:
@@ -112,19 +128,62 @@ services:
       timeout: 5s
       retries: 5
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1026:1025" # SMTP interne du container → port externe 1026
+      - "8026:8025" # Web UI externe
+    networks:
+      - leadforge
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8025" ]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+
 volumes:
   caddy_data:
-    name: leadforge_caddy_data                  # ✅ Nom explicite
+    name: leadforge_caddy_data
   caddy_config:
-    name: leadforge_caddy_config                # ✅ Nom explicite
+    name: leadforge_caddy_config
   postgres_data:
-    name: leadforge_postgres_data               # ✅ Nom explicite
+    name: leadforge_postgres_data
   redis_data:
-    name: leadforge_redis_data                  # ✅ Nom explicite
+    name: leadforge_redis_data
   rabbitmq_data:
-    name: leadforge_rabbitmq_data               # ✅ Nom explicite
+    name: leadforge_rabbitmq_data
+
+  # ⬇️ AJOUTÉ : Définition des nouveaux volumes
+  app_sync:
+  vendor:
+  var:
+  # ⬆️ FIN DES AJOUTS
 
 networks:
-  leadforge:                                    # ✅ Minuscule cohérent
+  leadforge:
     driver: bridge
 
+# ⬇️ AJOUTÉ : La configuration de synchronisation pour Mutagen
+x-mutagen:
+  sync:
+    app-sync: # Un nom pour la session de synchronisation
+      # Le dossier source sur votre Mac (le projet)
+      alpha: '../'
+      # La destination : le volume Docker qu'on a défini
+      beta: 'volume://app_sync'
+      mode: "two-way-resolved"
+      ignore:
+        vcs: true # Ignore les dossiers .git, .svn, etc.
+        paths:
+          # Très important : on ne synchronise PAS ces dossiers !
+          - 'var'
+          - 'vendor'
+          - 'node_modules'
+          - 'public/build'
+          # Le docker-compose.yml est dans un sous-dossier, comme 'docker'. Mutagen
+          # ne doit pas synchroniser ce dossier lui-même dans l'application.
+          # Ajustez ce nom si votre dossier s'appelle différemment.
+          - 'docker'
+# ⬆️ FIN DES AJOUTS

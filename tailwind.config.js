@@ -7,7 +7,11 @@ module.exports = {
   ],
   darkMode: false,
   theme: {
-    extend: {},
+      extend: {
+          colors: {
+              'leadforge': '#0B261C',
+          }
+      },
   },
   plugins: [
     require("@tailwindcss/forms")({

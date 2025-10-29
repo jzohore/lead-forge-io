@@ -4,24 +4,23 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Entity;
 
-use App\Domain\User\ValueObject\SubscriptionPlan;
-use App\Domain\User\ValueObject\SubscriptionStatus;
+use App\Domain\Profil\Entity\Profil;
 use App\Infrastructure\User\Doctrine\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-use libphonenumber\PhoneNumber;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\Clock\now;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: '`users`')]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: false)]
 #[UniqueEntity(fields: ['email'], message: 'Un compte existe déjà avec cet email')]
 final class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -34,21 +33,21 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    private ?Uuid $id = null {
+    public ?Uuid $id = null {
         get => $this->id;
     }
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     #[Assert\NotBlank(message: 'L\'email est obligatoire')]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide')]
-    private ?string $email = null {
+    public ?string $email = null {
         get => $this->email;
         set => $this->email = strtolower(trim($value ?? ''));
     }
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Slug(fields: ['email'], unique: true)]
-    private ?string $slug = null {
+    public ?string $slug = null {
         get => $this->slug;
     }
 
@@ -58,7 +57,7 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column(type: Types::JSON)]
-    private array $roles = ['ROLE_USER'] {
+    public array $roles = ['ROLE_USER'] {
         get => array_unique([...$this->roles, 'ROLE_USER']);
         set => $this->roles = array_values(array_unique($value));
     }
@@ -67,13 +66,13 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null The hashed password
      */
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    private ?string $password = null {
+    public ?string $password = null {
         get => $this->password;
         set => $this->password = $value;
     }
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    private bool $isVerified = false {
+    public bool $isVerified = false {
         get => $this->isVerified;
         set => $this->isVerified = $value;
     }
@@ -81,25 +80,25 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     // ==================== TOKENS ====================
 
     #[ORM\Column(type: Types::STRING, length: 128, unique: true, nullable: true)]
-    private ?string $validationToken = null {
+    public ?string $validationToken = null {
         get => $this->validationToken;
         set => $this->validationToken = $value;
     }
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $validationTokenExpiresAt = null {
+    public ?\DateTimeImmutable $validationTokenExpiresAt = null {
         get => $this->validationTokenExpiresAt;
         set => $this->validationTokenExpiresAt = $value;
     }
 
     #[ORM\Column(type: Types::STRING, length: 128, unique: true, nullable: true)]
-    private ?string $resetToken = null {
+    public ?string $resetToken = null {
         get => $this->resetToken;
         set => $this->resetToken = $value;
     }
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $resetTokenExpiresAt = null {
+    public ?\DateTimeImmutable $resetTokenExpiresAt = null {
         get => $this->resetTokenExpiresAt;
         set => $this->resetTokenExpiresAt = $value;
     }
@@ -108,14 +107,14 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     #[Assert\Length(max: 100)]
-    private ?string $firstName = null {
+    public ?string $firstName = null {
         get => $this->firstName;
         set => $this->firstName = $value ? ucfirst(trim($value)) : null;
     }
 
     #[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
     #[Assert\Length(max: 100)]
-    private ?string $lastName = null {
+    public ?string $lastName = null {
         get => $this->lastName;
         set => $this->lastName = $value ? ucfirst(trim($value)) : null;
     }
@@ -123,74 +122,22 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     // ==================== OAUTH ====================
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true, nullable: true)]
-    private ?string $googleId = null {
+    public ?string $googleId = null {
         get => $this->googleId;
         set => $this->googleId = $value;
     }
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $hostedDomain = null {
+    public ?string $hostedDomain = null {
         get => $this->hostedDomain;
         set => $this->hostedDomain = $value;
-    }
-
-    // ==================== CRÉDITS ====================
-
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 100, 'unsigned' => true])]
-    #[Assert\PositiveOrZero]
-    private int $creditsRemaining = 100 {
-        get => $this->creditsRemaining;
-        set => $this->creditsRemaining = max(0, $value);
-    }
-
-    #[ORM\Column(type: Types::INTEGER, options: ['default' => 100, 'unsigned' => true])]
-    #[Assert\PositiveOrZero]
-    private int $creditsTotal = 100 {
-        get => $this->creditsTotal;
-        set => $this->creditsTotal = max(0, $value);
-    }
-
-    // ==================== STRIPE / ABONNEMENT ====================
-
-    #[ORM\Column(type: Types::STRING, length: 100, unique: true, nullable: true)]
-    private ?string $stripeCustomerId = null {
-        get => $this->stripeCustomerId;
-        set => $this->stripeCustomerId = $value;
-    }
-
-    #[ORM\Column(
-        type: Types::STRING,
-        length: 50,
-        nullable: true,
-        enumType: SubscriptionStatus::class
-    )]
-    private ?SubscriptionStatus $subscriptionStatus = null {
-        get => $this->subscriptionStatus;
-        set => $this->subscriptionStatus = $value;
-    }
-
-    #[ORM\Column(
-        type: Types::STRING,
-        length: 50,
-        nullable: true,
-        enumType: SubscriptionPlan::class
-    )]
-    private ?SubscriptionPlan $subscriptionPlan = null {
-        get => $this->subscriptionPlan;
-        set => $this->subscriptionPlan = $value;
-    }
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $subscriptionEndsAt = null {
-        get => $this->subscriptionEndsAt;
-        set => $this->subscriptionEndsAt = $value;
     }
 
     // ==================== TIMESTAMPS ====================
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private \DateTimeImmutable $createdAt {
+    public \DateTimeImmutable $createdAt {
         get => $this->createdAt;
     }
 
@@ -200,10 +147,17 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         get => $this->updatedAt;
     }
 
-    #[ORM\Column(type: 'phone_number', nullable: true)]
-    private ?PhoneNumber $phone {
-        get => $this->phone;
-        set => $this->phone = $value;
+    #[ORM\OneToOne(targetEntity: Profil::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    public ?Profil $profile = null {
+        get => $this->profile;
+        set => $this->profile = $value;
+    }
+
+    public function __construct()
+    {
+        $this->createdAt = now()->setTimezone(new \DateTimeZone('Europe/Paris'));
+        $this->updatedAt = now()->setTimezone(new \DateTimeZone('Europe/Paris'));
+        //$this->generateValidationToken();
     }
 
     // ==================== MÉTHODES SECURITY ====================
@@ -233,46 +187,6 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFullName(): string
     {
         return trim(sprintf('%s %s', $this->firstName ?? '', $this->lastName ?? '')) ?: $this->email ?? 'Utilisateur';
-    }
-
-    public function hasActiveSubscription(): bool
-    {
-        return SubscriptionStatus::ACTIVE === $this->subscriptionStatus
-            && (null === $this->subscriptionEndsAt || $this->subscriptionEndsAt > new \DateTimeImmutable());
-    }
-
-    public function hasCredits(): bool
-    {
-        return $this->creditsRemaining > 0;
-    }
-
-    public function consumeCredits(int $amount): void
-    {
-        if ($amount < 0) {
-            throw new \InvalidArgumentException('Le montant doit être positif');
-        }
-
-        if ($this->creditsRemaining < $amount) {
-            throw new \RuntimeException(sprintf('Crédits insuffisants (disponibles: %d, requis: %d)', $this->creditsRemaining, $amount));
-        }
-
-        $this->creditsRemaining -= $amount;
-    }
-
-    public function addCredits(int $amount): void
-    {
-        if ($amount < 0) {
-            throw new \InvalidArgumentException('Le montant doit être positif');
-        }
-
-        $this->creditsRemaining += $amount;
-        $this->creditsTotal += $amount;
-    }
-
-    public function resetCredits(int $amount = 100): void
-    {
-        $this->creditsRemaining = $amount;
-        $this->creditsTotal = $amount;
     }
 
     public function isTokenValid(?string $token, ?\DateTimeImmutable $expiresAt): bool

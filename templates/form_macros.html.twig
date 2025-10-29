@@ -1,0 +1,38 @@
+{% macro tailwind_form_row(field, label_override='') %}
+    <div class="mb-6 relative">
+        <label for="{{ field.vars.id }}" class="block text-sm font-medium mb-2">
+            {{ label_override|default(field.vars.label|trans) }}
+        </label>
+
+        {% set field_type = field.vars.block_prefixes|last %}
+        {% set base_classes = 'bg-white text-gray-800 w-full transition-colors duration-200 ' %}
+        {% set border_classes = form_errors(field)|length ?
+            'border-2 border-red-600 focus:border-red-700' :
+            'border-2 border-gray-300 focus:border-blue-500' %}
+
+        {% set type_classes %}
+            {%- if field_type == 'textarea' -%}
+                textarea resize-y min-h-[120px] leading-relaxed
+            {%- elseif field_type == 'email' -%}
+                input lowercase
+            {%- elseif field_type == 'password' -%}
+                input font-mono
+            {%- elseif field_type == 'number' -%}
+                input text-right tabular-nums
+            {%- else -%}
+                input
+            {%- endif -%}
+        {% endset %}
+
+        {{ form_widget(field, {
+            'attr': {
+                'class': base_classes ~ type_classes ~ ' ' ~ border_classes
+            }
+        }) }}
+
+        {% for error in field.vars.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ error.message }}</p>
+        {% endfor %}
+    </div>
+{% endmacro %}
+

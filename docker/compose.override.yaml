@@ -1,6 +1,6 @@
 services:
   worker:
-    image: my-symfony-app:dev
+    image: leadforge-app:dev
     container_name: symfony_worker
     env_file:
       - ../.env

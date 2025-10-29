@@ -1,0 +1,15 @@
+{# templates/components/alert.html.twig #}
+<div class="toast toast-top toast-end mt-[20px] z-[9999]"
+     data-controller="toast-display"
+     data-toast-display-message-value="{{ message }}"
+     data-toast-display-type-value="{{ type }}"
+     data-toast-display-duration-value="3000"
+     role="alert"
+>
+    {% set bgColor = type == 'error' ? 'bg-red-200 dark:bg-red-800' : 'bg-green-200 dark:bg-green-800' %}
+    {% set textColor = type == 'error' ? 'text-red-900 dark:text-red-100' : 'text-green-900 dark:text-green-100' %}
+
+    <div class="alert {{ bgColor }} {{ textColor }} font-semibold border-transparent shadow-lg" role="alert">
+        <span class="text-xs">{{ message }}</span>
+    </div>
+</div>

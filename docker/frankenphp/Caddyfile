@@ -1,26 +1,46 @@
-{
-    frankenphp
-    auto_https off
-}
-
-:443 {
-    encode gzip zstd
+# ====================
+# LeadForge Symfony
+# ====================
+lead-forge.local {
     root * /srv/app/public
-
-    tls internal {
-        on_demand
-    }
-
+    encode gzip zstd
     php_server
     file_server
-
     log {
-        output stdout
-        format console
-        level DEBUG
-    }
+            output stdout
+            format console
+            level DEBUG
+        }
+    tls internal
 }
 
-:80 {
-    redir https://{host}:8443{uri} permanent
+# ====================
+# MailHog UI
+# ====================
+mailhog.local {
+    reverse_proxy mailhog:8025
+    tls internal
+}
+
+# ====================
+# RabbitMQ Management UI
+# ====================
+rabbitmq.local {
+    reverse_proxy rabbitmq:15672
+    tls internal
+}
+
+# ====================
+# Redis Commander (optionnel)
+# ====================
+redis.local {
+    reverse_proxy redis:8081  # si tu ajoutes Redis Commander sur 8081
+    tls internal
+}
+
+# ====================
+# Redirection HTTP → HTTPS
+# ====================
+http://lead-forge.local http://mailhog.local http://rabbitmq.local http://redis.local {
+    redir https://{host}{uri} permanent
 }
