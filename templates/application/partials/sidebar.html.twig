@@ -1,0 +1,57 @@
+<aside class="bg-green-50/25 text-gray-800 border-b md:border-b-0 md:border-r border-white md:h-full md:sticky md:top-16">
+    <h2 class="sr-only">Navigation latérale</h2>
+    <details class="md:hidden p-3">
+        <summary class="btn btn-ghost w-full justify-between text-white">
+            <span>Menu</span>
+            <twig:ux:icon name="iconamoon:menu-burger-horizontal-duotone" width="20" height="20" aria-hidden="true" />
+            <span class="sr-only">Menu</span>
+        </summary>
+        <nav aria-label="Navigation latérale" class="mt-2">
+            <ul class="menu menu-sm text-white/90" role="menu">
+                <li class="menu-title text-white/70">Administration</li>
+                <li><a role="menuitem" href="" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:house-duotone" width="18" height="18" aria-hidden="true" /> <span>Tableau de bord</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_orders' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:shopping-cart-duotone" width="18" height="18" aria-hidden="true" /> <span>Commandes</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_invoices' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:file-text-duotone" width="18" height="18" aria-hidden="true" /> <span>Factures</span></span></a></li>
+                <li><a role="menuitem" href="" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_user_clients_list' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:users-duotone" width="18" height="18" aria-hidden="true" /> <span>Clients</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_resellers' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:handshake-duotone" width="18" height="18" aria-hidden="true" /> <span>Revendeurs</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_carriers' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:truck-duotone" width="18" height="18" aria-hidden="true" /> <span>Transporteurs</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_reviews' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:star-duotone" width="18" height="18" aria-hidden="true" /> <span>Avis</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_requests' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:chat-circle-text-duotone" width="18" height="18" aria-hidden="true" /> <span>Demandes</span></span></a></li>
+                <li><a role="menuitem" href="#" class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60" aria-current="{{ current starts with 'admin_stats' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="ph:chart-line-up-duotone" width="18" height="18" aria-hidden="true" /> <span>Statistiques</span></span></a></li>
+            </ul>
+        </nav>
+    </details>
+
+    <!-- Desktop: sidebar visible avec LIENS -->
+    <nav aria-label="Navigation latérale" class="hidden md:block p-1">
+        <ul class="menu text-white/90 text-sm" role="menu">
+            <li class="menu-title text-gray-900">Activité</li>
+            <li class="pr-5"><a role="menuitem" href="{{ path('app_search_query_request') }}"
+                   class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-gray-900 font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                   aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="flowbite:edit-solid" width="15" height="15" aria-hidden="true" /> <span>Nouvelle recherche</span></span></a></li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-gray-900 font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="si:search-fill" width="15" height="15" aria-hidden="true" /> <span>Rechercher des leads</span></span></a></li>
+            <li class="menu-title text-gray-900 ">Finances</li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="healthicons:money-bag" width="15" height="15" aria-hidden="true" /> <span>Crédits</span></span></a></li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="iconamoon:history-duotone" width="15" height="15" aria-hidden="true" /> <span>Historique</span></span></a></li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="solar:bill-check-bold" width="15" height="15" aria-hidden="true" /> <span>Factures</span></span></a></li>
+            <li class="menu-title text-gray-900">Compte</li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="tdesign:user-setting-filled" width="15" height="15" aria-hidden="true" /> <span>Paramètres</span></span></a></li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="material-symbols:contact-support-rounded" width="15" height="15" aria-hidden="true" /> <span>Support</span></span></a></li>
+            <li class="pr-5"><a role="menuitem" href=""
+                                class="rounded-md hover:bg-white/10 focus-visible:outline  focus-visible:outline-offset-2 focus-visible:outline-white/60 {{ current == 'admin_dashboard' ? 'bg-white/20 text-white font-bold' : 'text-gray-900 font-bold' }} text-xs"
+                                aria-current="{{ current == 'admin_dashboard' ? 'page' : null }}"><span class="inline-flex items-center gap-2"><twig:ux:icon name="fluent:person-feedback-28-filled" width="15" height="15" aria-hidden="true" /> <span>Laissez un feedback</span></span></a></li>
+        </ul>
+    </nav>
+</aside>

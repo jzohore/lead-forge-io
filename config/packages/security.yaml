@@ -31,7 +31,7 @@ security:
                 enable_csrf: true
                 username_parameter: _username  # car ton input s'appelle "_username"
                 password_parameter: _password  # idem pour "_password"
-                default_target_path: website_homepage
+                default_target_path: application_redirect_to_home
             logout:
                 path: app_logout
                 target: app_login

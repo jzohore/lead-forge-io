@@ -1,0 +1,38 @@
+<div{{ attributes }}>
+    {% import 'form_macros.html.twig' as macros %}
+    <div data-controller="form">
+        {{ form_start(form, {
+            attr: {
+                novalidate: true,
+                'data-action': 'live#action:prevent',
+                'data-live-action-param': 'files|save',
+            }
+        }) }}
+        <div class="flex flex-col gap-3">
+            {{ macros.tailwind_form_row(form.message) }}
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Télécharger une photo</legend>
+                <input type="file" class="file-input w-full" name="single"
+                       autocomplete="off"
+                       id="single-file"
+                       accept=".jpg,.jpeg,.png,.webp" data-form-target="input" />
+                <label class="label">L’image ne doit pas dépasser 1 Mo.</label>
+                {% if singleFileUploadError %}
+                    <div class="mt-2 text-xs text-red-600">{{ singleFileUploadError }}</div>
+                {% endif %}
+            </fieldset>
+            <p class="text-xs text-gray-400">
+                Toutes les informations que vous partagez sont susceptibles d’être passées en revue à
+                des fins d’amélioration de {{ company_name }}.
+            </p>
+            <div class="mt-4 flex gap-5 justify-end">
+                {{ form_row(form.submit, {
+                    attr: { 'class': 'btn btn-sm text-white bg-[#2E6B28]' },
+                }) }}
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+</div>

@@ -1,0 +1,70 @@
+<header class="bg-white fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navigation principale">
+        <div class="flex justify-between items-center h-16">
+
+            {# Logo / Nom #}
+            <div class="flex-shrink-0">
+                <a href="/" class="flex items-center space-x-2 group" aria-label="Retour à l'accueil LeadForge">
+                    <span class="font-bold text-md text-[#0B261C] group-hover:text-emerald-600 transition-colors duration-200">
+                        LeadForge
+                    </span>
+                </a>
+            </div>
+
+            {# Navigation Desktop #}
+            <div class="hidden md:flex md:items-center md:space-x-8">
+                <a href="/tarifs"
+                   class="text-sm text-gray-600 hover:text-[#0B261C] font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded px-2 py-1">
+                    Tarifs
+                </a>
+
+                <a href="/connexion"
+                   class="text-sm text-gray-600 hover:text-[#0B261C] font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded px-2 py-1">
+                    Connexion
+                </a>
+
+                <a href="{{ path('website_early_access') }}"
+                   class="btn btn-sm text-white bg-[#0B261C] hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-200">
+                    Essayez gratuitement →
+                </a>
+            </div>
+
+            {# Burger Menu Mobile (CSS only) #}
+            <div class="md:hidden">
+                <input type="checkbox" id="mobile-menu-toggle" class="peer hidden" aria-label="Toggle navigation menu">
+                <label for="mobile-menu-toggle"
+                       class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-[#0B261C] hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-500 transition-colors duration-200 cursor-pointer">
+                    <span class="sr-only">Ouvrir le menu principal</span>
+                    {# Icon Hamburger #}
+                    <svg class="h-6 w-6 peer-checked:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    {# Icon Close #}
+                    <svg class="h-6 w-6 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </label>
+
+                {# Navigation Mobile #}
+                <div class="hidden peer-checked:block absolute left-0 right-0 top-16 bg-white border-b border-gray-100">
+                    <div class="px-2 pt-2 pb-3 space-y-1">
+                        <a href="/tarifs"
+                           class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0B261C] hover:bg-gray-50 transition-colors duration-200">
+                            Tarifs
+                        </a>
+
+                        <a href="{{ path('app_login') }}"
+                           class="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0B261C] hover:bg-gray-50 transition-colors duration-200">
+                            Connexion
+                        </a>
+
+                        <a href="/inscription"
+                           class="block w-full text-center px-3 py-2 rounded-md text-sm font-medium text-white bg-[#0B261C] hover:bg-emerald-700 transition-colors duration-200">
+                            Essayez gratuitement →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

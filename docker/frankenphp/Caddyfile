@@ -1,7 +1,5 @@
-# ====================
 # LeadForge Symfony
-# ====================
-lead-forge.local {
+lead-forge.test {
     root * /srv/app/public
     encode gzip zstd
     php_server
@@ -14,33 +12,25 @@ lead-forge.local {
     tls internal
 }
 
-# ====================
 # MailHog UI
-# ====================
-mailhog.local {
-    reverse_proxy mailhog:8025
+mailhog.test {
+    reverse_proxy mailhog:8026
     tls internal
 }
 
-# ====================
 # RabbitMQ Management UI
-# ====================
-rabbitmq.local {
-    reverse_proxy rabbitmq:15672
+rabbitmq.test {
+    reverse_proxy rabbitmq:15673
     tls internal
 }
 
-# ====================
-# Redis Commander (optionnel)
-# ====================
-redis.local {
-    reverse_proxy redis:8081  # si tu ajoutes Redis Commander sur 8081
+# Mercure
+mercure.test {
+    reverse_proxy leadforge_mercure:80
     tls internal
 }
 
-# ====================
-# Redirection HTTP → HTTPS
-# ====================
-http://lead-forge.local http://mailhog.local http://rabbitmq.local http://redis.local {
+# Redirect HTTP → HTTPS
+http://lead-forge.test http://mailhog.test http://rabbitmq.test http://redis.test http://mercure.test {
     redir https://{host}{uri} permanent
 }

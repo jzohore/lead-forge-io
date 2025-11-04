@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\User\DTO\Response;
 
 final readonly class UserErrorResponse
@@ -71,7 +73,7 @@ final readonly class UserErrorResponse
             'message' => $this->message,
         ];
 
-        if ($this->errors !== null) {
+        if (null !== $this->errors) {
             $data['errors'] = $this->errors;
         }
 

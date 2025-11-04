@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    {% for message in app.flashes('success') %}
+        {{ component('alert', {message: message}) }}
+    {% endfor %}
+    {% set current = app.request.attributes.get('_route') %}
+
+
+    <div class="h-[100svh] overflow-hidden">
+        <div class="h-full md:grid md:grid-cols-[250px_1fr] min-h-0">
+            {% include 'application/partials/sidebar.html.twig' %}
+            <main id="main" tabindex="-1" data-theme="light" class="flex flex-col min-h-0 h-full">
+                {% include 'application/partials/header.html.twig' %}
+                <div class="min-h-0 flex-1 overflow-y-auto p-5 mb-6 md:pr-4 md:pl-4">
+                    {% block main_administration %}{% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}

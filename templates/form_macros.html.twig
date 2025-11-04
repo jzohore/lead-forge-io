@@ -8,7 +8,7 @@
         {% set base_classes = 'bg-white text-gray-800 w-full transition-colors duration-200 ' %}
         {% set border_classes = form_errors(field)|length ?
             'border-2 border-red-600 focus:border-red-700' :
-            'border-2 border-gray-300 focus:border-blue-500' %}
+            'border-1 border-gray-300 focus:border-blue-500' %}
 
         {% set type_classes %}
             {%- if field_type == 'textarea' -%}
@@ -19,6 +19,8 @@
                 input font-mono
             {%- elseif field_type == 'number' -%}
                 input text-right tabular-nums
+            {% elseif field_type == 'file' %}
+                file-input
             {%- else -%}
                 input
             {%- endif -%}

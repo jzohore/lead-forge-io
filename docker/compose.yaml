@@ -42,11 +42,10 @@ services:
     networks:
       - leadforge
     extra_hosts:
-      - "lead-forge.local:host-gateway"
-      - "mailhog.local:host-gateway"
-      - "mercure.local:host-gateway"
-      - "redis.local:host-gateway"
-      - "rabbitmq.local:host-gateway"
+      - "lead-forge.test:host-gateway"
+      - "mailhog.test:host-gateway"
+      - "rabbitmq.test:host-gateway"
+      - "redis.test:host-gateway"
     tty: true
 
   # ... Les autres services (db, redis, rabbitmq, mercure) restent inchangés ...

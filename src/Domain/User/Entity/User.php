@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\User\Entity;
 
 use App\Domain\Profil\Entity\Profil;
+use App\Domain\ReportBug\Entity\ReportBug;
+use App\Domain\SearchQuery\Entity\SearchQuery;
 use App\Infrastructure\User\Doctrine\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -13,11 +16,13 @@ use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use function Symfony\Component\Clock\now;
+
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
-use function Symfony\Component\Clock\now;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`users`')]
@@ -133,6 +138,27 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
         set => $this->hostedDomain = $value;
     }
 
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
+    public ?string $lang = null {
+        get => $this->lang;
+        set => $this->lang = $value;
+    }
+
+    /**
+     * @var Collection<int, ReportBug>
+     */
+    #[ORM\OneToMany(targetEntity: ReportBug::class, mappedBy: 'owner')]
+    public Collection $reportBugs {
+        get => $this->reportBugs;
+        set => $this->reportBugs = $value;
+    }
+
+    #[ORM\OneToMany(targetEntity: SearchQuery::class, mappedBy: 'owner')]
+    public Collection $searchQuery {
+        get => $this->searchQuery;
+        set => $this->searchQuery = $value;
+    }
+
     // ==================== TIMESTAMPS ====================
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -148,16 +174,16 @@ final class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\OneToOne(targetEntity: Profil::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    public ?Profil $profile = null {
-        get => $this->profile;
-        set => $this->profile = $value;
+    public ?Profil $profil = null {
+        get => $this->profil;
+        set => $this->profil = $value;
     }
 
     public function __construct()
     {
         $this->createdAt = now()->setTimezone(new \DateTimeZone('Europe/Paris'));
         $this->updatedAt = now()->setTimezone(new \DateTimeZone('Europe/Paris'));
-        //$this->generateValidationToken();
+        // $this->generateValidationToken();
     }
 
     // ==================== MÉTHODES SECURITY ====================

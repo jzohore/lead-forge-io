@@ -1,0 +1,94 @@
+<header role="banner"
+        class="sticky top-0 z-[200] h-14 pr-5 pl-3
+         bg-white supports-[backdrop-filter]:bg-white text-gray-950">
+    <nav aria-label="Navigation principale" class="navbar h-full">
+        <div class="navbar-start">
+      <span class="sr-only" role="heading" aria-level="1">
+        <span class="text-md font-semibold tracking-tight">{{ company_name }}</span>
+      </span>
+            <a href="#" class="text-xs font-semibold mr-4 text-gray-500" type="button">
+                Crédits : <span class="font-bold">+99</span>
+            </a>
+        </div>
+
+        <div class="navbar-end gap-2">
+            <button class="btn btn-xs btn-ghost mr-3" onclick="my_modal_1.showModal()">
+                <twig:ux:icon name="tabler:notification" width="20" height="20"
+                              class="text-primary" aria-hidden="true" />
+            </button>
+            <dialog id="my_modal_1" class="modal">
+                <div class="modal-box">
+                    <h3 class="text-lg font-bold">Hello!</h3>
+                    <p class="py-4">Press ESC key or click the button below to close</p>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <!-- if there is a button in form, it will close the modal -->
+                            <button class="btn">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+            <div class="dropdown dropdown-start relative">
+                <div class="avatar avatar-placeholder cursor-pointer" tabindex="0" role="button">
+                    <div class="bg-violet-200 text-gray-900 w-6 rounded-full ring-primary ring-1 ring-offset-2">
+                        <span class="sr-only">Compte</span>
+                        <span class="text-xs font-bold">
+                            {{ app.user.firstName | first | upper }}
+                        </span>
+                    </div>
+                </div>
+
+                <ul tabindex="-1"
+                    class="menu menu-sm dropdown-content
+           fixed top-16 right-4 mt-2
+           w-56 rounded-box bg-base-100 text-base-content p-3 shadow-xl border border-accent-content
+           z-[9999]"
+                    role="menu" aria-label="Menu compte">
+
+                    {# Section Paramètres ---------------------------------------------- #}
+                    <li>
+                        <a href="" role="menuitem" class="inline-flex w-full items-center gap-2">
+                            <twig:ux:icon name="ic:twotone-info" width="16" height="16"
+                                          class="text-gray-500" aria-hidden="true" />
+                            <span>Centre d'assistance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" role="menuitem" class="inline-flex w-full items-center gap-2">
+                            <twig:ux:icon name="solar:documents-bold-duotone" width="16" height="16"
+                                          class="text-gray-500" aria-hidden="true" />
+                            <span>Conditions et politiques</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('app_report_bug_request') }}" role="menuitem" class="inline-flex w-full items-center gap-2">
+                            <twig:ux:icon name="fluent:person-feedback-28-filled" width="16" height="16"
+                                          class="text-gray-500" aria-hidden="true" />
+                            <span>Signaler un bug</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" role="menuitem" class="inline-flex w-full items-center gap-2">
+                            <twig:ux:icon name="ph:shield-check-duotone" width="16" height="16"
+                                          class="text-gray-500" aria-hidden="true" />
+                            <span>Conformité</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ path('app_logout') }}" type="button" role="menuitem" class="inline-flex w-full items-center gap-2">
+                            <twig:ux:icon name="ph:sign-out-duotone" width="16" height="16"
+                                          class="text-[#6e2f1e]" aria-hidden="true" />
+                            <span>Se déconnecter</span>
+                        </a>
+                    </li>
+                </ul>
+
+
+            </div>
+{#            <div data-controller="dark-mode">#}
+{#                <button data-dark-mode-target="button" data-action="click->dark-mode#toggle" class="btn btn-sm btn-ghost" type="button" aria-pressed="false" title="🌙 Mode sombre">🌙</button>#}
+{#            </div>#}
+        </div>
+    </nav>
+</header>

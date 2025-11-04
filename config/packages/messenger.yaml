@@ -1,31 +1,57 @@
 framework:
     messenger:
-        failure_transport: failed
+        # Transport pour gérer les messages qui échouent définitivement
+        failure_transport: lead_failed
 
         transports:
+            # -------------------------------
+            # Transport spécifique SearchQuery
+            # -------------------------------
+            lead_async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: search_query
+                        type: direct
+                    queues:
+                        search_query: ~
+                retry_strategy:
+                    max_retries: 5
+                    delay: 2000       # délai initial 2s
+                    multiplier: 2     # double à chaque retry
+                    max_delay: 30000  # max 30s
+
+            # -------------------------------
+            # Transport pour mails / notifications
+            # -------------------------------
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
-                # ❌ SUPPRIME use_notify et check_delayed_interval
-                # Ces options sont pour Doctrine, pas AMQP
-                retry_strategy:
-                    max_retries: 3
-                    delay: 1000
-                    multiplier: 2
-                    max_delay: 0
-
-                # ✅ Options AMQP valides
                 options:
                     exchange:
                         name: messages
                         type: direct
                     queues:
                         messages: ~
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 0
+
+            # -------------------------------
+            # Dead-letter / échecs
+            # -------------------------------
+            lead_failed:
+                dsn: 'doctrine://default?queue_name=lead_failed'
 
             failed:
                 dsn: 'doctrine://default?queue_name=failed'
 
         routing:
-            'App\Message\*': async
+            # Messages B2B → transport dédié
+            'App\Application\SearchQuery\DTO\Message\ProcessSearchQueryMessage': lead_async
+
+            # Autres messages → transport générique
             'Symfony\Component\Mailer\Messenger\SendEmailMessage': async
             'Symfony\Component\Notifier\Message\ChatMessage': async
             'Symfony\Component\Notifier\Message\SmsMessage': async
